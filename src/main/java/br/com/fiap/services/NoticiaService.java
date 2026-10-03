@@ -20,18 +20,17 @@ public class NoticiaService {
         String assuntoFormatado = assunto.replace(" ", "+");
 
         HttpGet request = new HttpGet(
-                "https://api.apitube.io/v1/news/everything"
-                        + assuntoFormatado +
-                        "?language.code=pt&per_page=10"
+                "https://api.apitube.io/v1/news/everything?title=" + assuntoFormatado + "&language.code=pt&per_page=10&page=1"
         );
+
 
         request.setHeader("X-API-Key", chaveApi);
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().disableRedirectHandling().build();
 
-        CloseableHttpResponse reponse = httpClient.execute(request);
+        CloseableHttpResponse response = httpClient.execute(request);
 
-        HttpEntity entity = reponse.getEntity();
+        HttpEntity entity = response.getEntity();
 
         if (entity != null) {
             String result = EntityUtils.toString(entity);
