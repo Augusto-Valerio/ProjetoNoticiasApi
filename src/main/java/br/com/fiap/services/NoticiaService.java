@@ -23,7 +23,6 @@ public class NoticiaService {
                 "https://api.apitube.io/v1/news/everything?title=" + assuntoFormatado + "&language.code=pt&per_page=10&page=1"
         );
 
-
         request.setHeader("X-API-Key", chaveApi);
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().disableRedirectHandling().build();

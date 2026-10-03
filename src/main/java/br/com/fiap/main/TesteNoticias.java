@@ -2,6 +2,7 @@ package br.com.fiap.main;
 
 import br.com.fiap.api.Noticia;
 import br.com.fiap.api.RespostaNoticias;
+import br.com.fiap.excecoes.ExcecoesApi;
 import br.com.fiap.services.NoticiaService;
 
 import javax.swing.*;
@@ -13,19 +14,48 @@ public class TesteNoticias {
         return JOptionPane.showInputDialog(mensagem);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws ExcecoesApi {
 
-        NoticiaService noticiaService = new NoticiaService();
+        try {
 
-        String assunto = texto("Informe o assunto da notícia");
+            NoticiaService noticiaService = new NoticiaService();
 
-        String chaveApi = texto("Informe a chave da APITube");
+            String assunto = texto("Informe o assunto da notícia");
 
-        RespostaNoticias resposta = noticiaService.getNoticias(assunto, chaveApi);
+            String chaveApi = texto("Informe a chave da APITube");
 
-        for (Noticia noticia : resposta.getResults()) {
-            System.out.println(noticia);
-            System.out.println();
+            RespostaNoticias resposta = noticiaService.getNoticias(assunto, chaveApi);
+
+            if (resposta == null) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Não foi possível consultar a API."
+                );
+
+            } else if (!"ok".equals(resposta.getStatus())) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "A chave da API está incorreta."
+                );
+
+            } else if (resposta.getResults() == null ||
+                    resposta.getResults().isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Nenhuma notícia encontrada para o assunto informado."
+                );
+
+            } else {
+                for (Noticia noticia : resposta.getResults()) {
+                    System.out.println(noticia);
+                    System.out.println();
+                }
+            }
+        } catch (IOException e) {
+            throw new ExcecoesApi(e);
+        } catch (Exception e) {
+            throw new ExcecoesApi("Falha desconhecida ao executar o programa");
         }
     }
 }
